@@ -85,7 +85,7 @@ class WordleSolver:
                 filter(
                     lambda word: all(
                         [
-                            True if Counter(word)[key] > wordleMultiples[key] else False
+                            True if Counter(word)[key] >= wordleMultiples[key] else False
                             for key in wordleMultiples
                         ]
                     ),
