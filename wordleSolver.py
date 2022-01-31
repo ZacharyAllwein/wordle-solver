@@ -35,19 +35,25 @@ class WordleSolver:
         # need to do the reverse of above to tell it what letters it doesn't have in what position, but since it is less specific needs to be done for each wrong letter in wrong place
         wrongLets = [item[0] if int(item[1]) != 2 else "." for item in wordle]
 
-        for i in range(len(wrongLets)):
+        self.words = [
+            word
+            for word in self.words
+            if True not in [wrongLets[i] == word[i] for i in range(len(word))]
+        ]
 
-            pattern = "".join(
-                [wrongLets[j] if j == i else "." for j in range(len(wrongLets))]
-            )
+        # for i in range(len(wrongLets)):
 
-            # because it is positional and wronglets have . in them, occasionally a pattern like ..... emerges if so just continue and ignore it
-            if pattern == ".....":
-                continue
+        #     pattern = "".join(
+        #         [wrongLets[j] if j == i else "." for j in range(len(wrongLets))]
+        #     )
 
-            self.words = list(
-                itertools.filterfalse(re.compile(pattern).match, self.words)
-            )
+        #     # because it is positional and wronglets have . in them, occasionally a pattern like ..... emerges if so just continue and ignore it
+        #     if pattern == ".....":
+        #         continue
+
+        #     self.words = list(
+        #         itertools.filterfalse(re.compile(pattern).match, self.words)
+        #     )
 
         # now we can do non positional filtering based on the letters we would expect it to have given the wordle
         wordleLetList = [item[0] for item in wordle if int(item[1]) != 0]
