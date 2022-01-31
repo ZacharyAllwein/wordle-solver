@@ -25,7 +25,6 @@ class WordleSolver:
     # letters with 0, are not in the word, letters with 1 are in the word but not in the right place and letters with 2 are in the word and in the right place
     def refine(self, wordle):
 
-        # attempting to filter [("s", 2), ("o", 1), ("r", 1), ("e", 1), ("s", 1)]
         # creates a re for above pattern where set letters are there and . are not set letters
         setLettersRe = re.compile(
             "".join([item[0] if int(item[1]) == 2 else "." for item in wordle])
@@ -34,24 +33,25 @@ class WordleSolver:
 
         # need to do the reverse of above to tell it what letters it doesn't have in what position, but since it is less specific needs to be done for each wrong letter in wrong place
         wrongLets = [item[0] if int(item[1]) != 2 else "." for item in wordle]
-
-        self.words = [
-            word
-            for word in self.words
-            if True not in [wrongLets[i] == word[i] for i in range(len(word))]
-        ]
+        self.words = list(
+            filter(
+                lambda word: True
+                not in [wrongLets[i] == word[i] for i in range(len(word))],
+                self.words,
+            )
+        )
 
         # now we can do non positional filtering based on the letters we would expect it to have given the wordle
         wordleLetList = [item[0] for item in wordle if int(item[1]) != 0]
 
-        # takes all of the words and makes sure that they all have above letters in them
-        self.words = [
-            word
-            for word in self.words
-            if not any(
-                [wordleLetList.count(let) - word.count(let) for let in wordleLetList]
+        self.words = list(
+            filter(
+                lambda word: all(
+                    [True if let in word else False for let in wordleLetList]
+                ),
+                self.words,
             )
-        ]
+        )
 
         # after that we can filter based on letters the wordle absolutley does not have
         wordleMissingList = [
