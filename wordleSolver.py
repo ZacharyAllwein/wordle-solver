@@ -30,29 +30,32 @@ class WordleSolver:
         setLettersRe = re.compile(
             "".join([item[0] if int(item[1]) == 2 else "." for item in wordle])
         )
-        self.words = list(filter(setLettersRe.match, self.words))
+        if setLettersRe.pattern != ".....":
+            self.words = list(filter(setLettersRe.match, self.words))
 
         # need to do the reverse of above to tell it what letters it doesn't have in what position, but since it is less specific needs to be done for each wrong letter in wrong place
         wrongLets = [item[0] if int(item[1]) != 2 else "." for item in wordle]
-        self.words = list(
-            filter(
-                lambda word: True
-                not in [wrongLets[i] == word[i] for i in range(len(word))],
-                self.words,
+        if wrongLets:
+            self.words = list(
+                filter(
+                    lambda word: True
+                    not in [wrongLets[i] == word[i] for i in range(len(word))],
+                    self.words,
+                )
             )
-        )
 
         # now we can do non positional filtering based on the letters we would expect it to have given the wordle
         wordleLetList = [item[0] for item in wordle if int(item[1]) != 0]
 
-        self.words = list(
-            filter(
-                lambda word: all(
-                    [True if let in word else False for let in wordleLetList]
-                ),
-                self.words,
+        if wordleLetList:
+            self.words = list(
+                filter(
+                    lambda word: all(
+                        [True if let in word else False for let in wordleLetList]
+                    ),
+                    self.words,
+                )
             )
-        )
 
         # after that we can filter based on letters the wordle absolutley does not have
         wordleMissingList = [
@@ -68,6 +71,24 @@ class WordleSolver:
                     re.compile(
                         str(wordleMissingList).replace(",", "").replace("'", "")
                     ).search,
+                    self.words,
+                )
+            )
+
+        # doesn't quite yet work when multiples are passed in example sunns, will only count one s
+        wordleMultiples = {
+            item[0]: item[1] for item in Counter(wordleLetList).items() if item[1] > 1
+        }
+
+        if wordleMultiples:
+            self.words = list(
+                filter(
+                    lambda word: all(
+                        [
+                            True if Counter(word)[key] > wordleMultiples[key] else False
+                            for key in wordleMultiples
+                        ]
+                    ),
                     self.words,
                 )
             )
