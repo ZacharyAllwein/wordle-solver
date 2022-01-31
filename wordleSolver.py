@@ -41,20 +41,6 @@ class WordleSolver:
             if True not in [wrongLets[i] == word[i] for i in range(len(word))]
         ]
 
-        # for i in range(len(wrongLets)):
-
-        #     pattern = "".join(
-        #         [wrongLets[j] if j == i else "." for j in range(len(wrongLets))]
-        #     )
-
-        #     # because it is positional and wronglets have . in them, occasionally a pattern like ..... emerges if so just continue and ignore it
-        #     if pattern == ".....":
-        #         continue
-
-        #     self.words = list(
-        #         itertools.filterfalse(re.compile(pattern).match, self.words)
-        #     )
-
         # now we can do non positional filtering based on the letters we would expect it to have given the wordle
         wordleLetList = [item[0] for item in wordle if int(item[1]) != 0]
 
