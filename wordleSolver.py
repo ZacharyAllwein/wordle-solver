@@ -13,10 +13,11 @@ class WordleSolver:
         dictionary = json.load(open(f"{dictPath}.json"))
 
         # creates required scores json file
-        WordScores(dictionary).toFile("scores")
+        if not exists("data/scores.json"):
+            WordScores(dictionary).toFile("data/scores")
 
         # loads in score json
-        scores = json.load(open("scores.json"))
+        scores = json.load(open("data/scores.json"))
 
         # already orded in greatest probability to least
         self.words = scores.keys()

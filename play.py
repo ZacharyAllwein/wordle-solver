@@ -5,7 +5,7 @@ import math
 if __name__ == "__main__":
 
     # new instance of wordleSolver dictionary that creates a new set of scores based on a dictionary
-    wordleSolver = WordleSolver("dictionary")
+    wordleSolver = WordleSolver("data/dictionary")
 
     while len(wordleSolver.words) > 1:
 
